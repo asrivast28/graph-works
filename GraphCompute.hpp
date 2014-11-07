@@ -18,9 +18,9 @@ public:
 
   bool
   operator()(
-    Graph& g,
-    GenerateFunction& generate,
-    CombineFunction& combine
+    Graph&,
+    GenerateFunction&,
+    CombineFunction&
   );
 
   ~GraphCompute();
@@ -28,37 +28,37 @@ public:
 private:
   bool
   generateInteractionSetForNode(
-    const Graph& g,
-    GenerateFunction& generate,
+    const Graph&,
+    GenerateFunction&,
     const typename Graph::Node &node,
-    std::vector<std::vector<typename Graph::Node> >& interactionSets,
-    GraphAlgorithmChoice& generateType
+    std::vector<std::vector<typename Graph::Node> >&,
+    GraphAlgorithmChoice&
   ) const;
 
   bool
   generateAllInteractionSets(
-    const Graph& g,
-    GenerateFunction& generate,
-    std::vector<std::vector<typename Graph::Node> >& interactionSets,
-    GraphAlgorithmChoice& generateType
+    const Graph&,
+    GenerateFunction&,
+    std::vector<std::vector<typename Graph::Node> >&,
+    GraphAlgorithmChoice&
   ) const;
 
   void
   detectCombineCase(
-    const Graph& g,
-    const std::vector<std::vector<typename Graph::Node> >& interactionSets,
-    const GraphAlgorithmChoice generateType,
-    const bool dependencyFlag,
-    GraphAlgorithmChoice& combineCase
+    const Graph&,
+    const std::vector<std::vector<typename Graph::Node> >&,
+    const GraphAlgorithmChoice,
+    const bool,
+    GraphAlgorithmChoice&
   ) const;
 
   void
   combineAll(
-    Graph& g,
-    CombineFunction& combine,
-    const std::vector<std::vector<typename Graph::Node> >& interactionSets,
-    const GraphAlgorithmChoice combineCase,
-    double& computeTime
+    Graph&,
+    CombineFunction&,
+    const std::vector<std::vector<typename Graph::Node> >&,
+    const GraphAlgorithmChoice,
+    double&
   ) const;
 
 private:
