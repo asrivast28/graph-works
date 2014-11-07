@@ -6,7 +6,7 @@
 
 class CombineFunction;
 
-class MPIDataHelper;
+class MPICommunicator;
 
 class Graph {
 public:
@@ -66,7 +66,7 @@ public:
   bool
   compute(
     CombineFunction&,
-    const MPIDataHelper&,
+    const MPICommunicator&,
     const std::vector<std::vector<Node> >&
   );
 

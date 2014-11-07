@@ -2,19 +2,19 @@
 #define GRAPHWORKS_GRAPHCOMPUTE_HPP_
 
 #include "Graph.hpp"
-#include "MPIDataHelper.hpp"
 
 #include <iostream>
 #include <vector>
 
 class CombineFunction;
 class GenerateFunction;
+class MPICommunicator;
 
 class GraphCompute {
 public:
   typedef typename Graph::AlgorithmChoice GraphAlgorithmChoice;
 
-  GraphCompute(const MPIDataHelper&);
+  GraphCompute(const MPICommunicator&);
 
   bool
   operator()(
@@ -62,7 +62,7 @@ private:
   ) const;
 
 private:
-  MPIDataHelper m_mpiDataHelper;
+  const MPICommunicator& m_mpiCommunicator;
 }; // class GraphCompute
 
 #endif // GRAPHWORKS_GRAPHCOMPUTE_HPP_

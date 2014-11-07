@@ -1,7 +1,7 @@
 #include "Graph.hpp"
 
 #include "CombineFunction.hpp"
-#include "MPIDataHelper.hpp"
+#include "MPICommunicator.hpp"
 
 size_t
 Graph::Node::index(
@@ -85,7 +85,7 @@ template <Graph::AlgorithmChoice>
 bool
 Graph::compute(
   CombineFunction& combine,
-  const MPIDataHelper& mpiDataHelper,
+  const MPICommunicator& mpiCommunicator,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -97,7 +97,7 @@ template <>
 bool
 Graph::compute<Graph::NoDependency>(
   CombineFunction& combine,
-  const MPIDataHelper& mpiDataHelper,
+  const MPICommunicator& mpiCommunicator,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -115,7 +115,7 @@ template <>
 bool
 Graph::compute<Graph::LocalComputation>(
   CombineFunction& combine,
-  const MPIDataHelper& mpiDataHelper,
+  const MPICommunicator& mpiCommunicator,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -131,7 +131,7 @@ template <>
 bool
 Graph::compute<Graph::UpwardAccumulateSpecial>(
   CombineFunction& combine,
-  const MPIDataHelper& mpiDataHelper,
+  const MPICommunicator& mpiCommunicator,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -142,7 +142,7 @@ template <>
 bool
 Graph::compute<Graph::DownwardAccumulateSpecial>(
   CombineFunction& combine,
-  const MPIDataHelper& mpiDataHelper,
+  const MPICommunicator& mpiCommunicator,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -154,8 +154,8 @@ Graph::~Graph(
 {
 }
 
-template bool Graph::compute<Graph::General>(CombineFunction&, const MPIDataHelper&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::UpwardAccumulateReverse>(CombineFunction&, const MPIDataHelper&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::UpwardAccumulateGeneral>(CombineFunction&, const MPIDataHelper&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::DownwardAccumulateReverse>(CombineFunction&, const MPIDataHelper&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::DownwardAccumulateGeneral>(CombineFunction&, const MPIDataHelper&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::General>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::UpwardAccumulateReverse>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::UpwardAccumulateGeneral>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::DownwardAccumulateReverse>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::DownwardAccumulateGeneral>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);

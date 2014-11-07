@@ -6,6 +6,7 @@
  */
 
 #include "GraphCompute.hpp"
+#include "MPICommunicator.hpp"
 
 #include <mpi.h>
 
@@ -13,9 +14,9 @@ int main(int argc, char** argv)
 {
   MPI_Init(&argc, &argv);
 
-  MPIDataHelper mpiDataHelper(MPI_COMM_WORLD);
+  MPICommunicator mpiCommunicator(MPI_COMM_WORLD);
 
-  GraphCompute graphCompute(mpiDataHelper);
+  GraphCompute graphCompute(mpiCommunicator);
 
   MPI_Finalize();
   return 0;
