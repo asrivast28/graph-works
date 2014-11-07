@@ -3,7 +3,6 @@
 
 #include "Graph.hpp"
 
-#include <iostream>
 #include <vector>
 
 class CombineFunction;

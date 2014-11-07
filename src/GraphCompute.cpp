@@ -4,6 +4,8 @@
 #include "GenerateFunction.hpp"
 #include "MPICommunicator.hpp"
 
+#include <iostream>
+
 GraphCompute::GraphCompute(
   const MPICommunicator& mpiCommunicator
 ) : m_mpiCommunicator(mpiCommunicator)
