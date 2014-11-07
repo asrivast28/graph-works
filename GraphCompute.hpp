@@ -14,7 +14,7 @@ class GraphCompute {
 public:
   typedef typename Graph::AlgorithmChoice GraphAlgorithmChoice;
 
-  GraphCompute(MPI_Comm communicator) : m_mpiDataHelper(communicator) { }
+  GraphCompute(const MPIDataHelper&);
 
   bool
   operator()(
@@ -22,6 +22,8 @@ public:
     GenerateFunction& generate,
     CombineFunction& combine
   );
+
+  ~GraphCompute();
 
 private:
   bool

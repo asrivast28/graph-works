@@ -12,6 +12,13 @@ public:
     MPI_Comm_rank(m_communicator, &m_rank);
   }
 
+  MPIDataHelper(const MPIDataHelper& mpiDataHelper)
+    : m_communicator(mpiDataHelper.communicator()),
+    m_rank(mpiDataHelper.rank()),
+    m_size(mpiDataHelper.size())
+  {
+  }
+
   MPI_Comm communicator() const { return m_communicator; }
 
   int size() const { return m_size; }

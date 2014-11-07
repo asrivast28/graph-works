@@ -3,6 +3,12 @@
 #include "CombineFunction.hpp"
 #include "GenerateFunction.hpp"
 
+GraphCompute::GraphCompute(
+  const MPIDataHelper& mpiDataHelper
+) : m_mpiDataHelper(mpiDataHelper)
+{
+}
+
 /**
  * @brief General version of interaction set generator.
  *
@@ -344,4 +350,9 @@ GraphCompute::operator()(
   }
 
   return true;
+}
+
+GraphCompute::~GraphCompute(
+)
+{
 }
