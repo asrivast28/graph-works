@@ -12,7 +12,10 @@ class MPICommunicator;
 class GraphCompute {
 public:
   typedef typename Graph::AlgorithmChoice GraphAlgorithmChoice;
+  typedef typename Graph::Node GraphNode;
+  typedef typename Graph::ConstNodeIterator GraphNodeIterator;
 
+public:
   GraphCompute(const MPICommunicator&);
 
   bool
@@ -29,33 +32,32 @@ private:
   generateInteractionSetForNode(
     const Graph&,
     GenerateFunction&,
-    const typename Graph::Node &node,
-    std::vector<std::vector<typename Graph::Node> >&,
-    GraphAlgorithmChoice&
+    const GraphAlgorithmChoice,
+    const GraphNode& node,
+    std::vector<std::vector<GraphNode> >&
   ) const;
 
   bool
   generateAllInteractionSets(
     const Graph&,
     GenerateFunction&,
-    std::vector<std::vector<typename Graph::Node> >&,
-    GraphAlgorithmChoice&
+    GraphAlgorithmChoice&,
+    std::vector<std::vector<GraphNode> >&
   ) const;
 
-  void
+  GraphAlgorithmChoice
   detectCombineCase(
     const Graph&,
-    const std::vector<std::vector<typename Graph::Node> >&,
     const GraphAlgorithmChoice,
-    const bool,
-    GraphAlgorithmChoice&
+    const std::vector<std::vector<GraphNode> >&,
+    const bool
   ) const;
 
   void
   combineAll(
     Graph&,
     CombineFunction&,
-    const std::vector<std::vector<typename Graph::Node> >&,
+    const std::vector<std::vector<GraphNode> >&,
     const GraphAlgorithmChoice,
     double&
   ) const;

@@ -17,9 +17,9 @@ GraphCompute::GraphCompute(
  *
  * @param g                 Graph on which computation is to be done.
  * @param generate          User provided generate function.
+ * @param generateType      Type of generate function.
  * @param node              Node for which interaction set is to be generated.
  * @param interactionSets   Interaction sets for all the nodes of the graph.
- * @param generateType      Type of generate function used.
  *
  * @return Dependency flag for the node.
  */
@@ -27,21 +27,19 @@ bool
 GraphCompute::generateInteractionSetForNode(
   const Graph& g,
   GenerateFunction& generate,
-  const typename Graph::Node &node,
-  std::vector<std::vector<typename Graph::Node> >& interactionSets,
-  GraphAlgorithmChoice& generateType
+  const GraphAlgorithmChoice generateType,
+  const GraphNode& node,
+  std::vector<std::vector<GraphNode> >& interactionSets
 ) const
 {
-
-  typedef typename Graph::Node GraphNode;
-
   std::vector<GraphNode> tempInteractionSet;
   std::back_insert_iterator<std::vector<GraphNode> > tempInteractionSetIter(tempInteractionSet);
 
   bool dependencyFlag = generate(g, node, tempInteractionSetIter);
-  interactionSets.push_back(tempInteractionSet);
 
-  generateType = Graph::General;
+  if (generateType == Graph::General) {
+    interactionSets.push_back(tempInteractionSet);
+  }
 
   return dependencyFlag;
 }
@@ -51,8 +49,8 @@ GraphCompute::generateInteractionSetForNode(
  *
  * @param g                 Graph on which computation is to be done.
  * @param generate          User provided generate function.
- * @param interactionSets   Interaction sets for all the nodes of the graph.
  * @param generateType      Type of generate function.
+ * @param interactionSets   Interaction sets for all the nodes of the graph.
  *
  * @return Dependency flag for all the nodes.
  *
@@ -63,32 +61,23 @@ bool
 GraphCompute::generateAllInteractionSets(
   const Graph& g,
   GenerateFunction& generate,
-  std::vector<std::vector<typename Graph::Node> >& interactionSets,
-  GraphAlgorithmChoice& generateType
+  GraphAlgorithmChoice& generateType,
+  std::vector<std::vector<GraphNode> >& interactionSets
 ) const
 {
-  typedef typename Graph::ConstNodeIterator NodeIterator;
-
   bool dependencyFlag = false;
 
   // Apply generate function on all nodes of the graph.
-  for (NodeIterator ni = g.begin(); ni != g.end(); ++ni) {
-    GraphAlgorithmChoice nodeGenerateType = Graph::General;
+  for (GraphNodeIterator ni = g.begin(); ni != g.end(); ++ni) {
 
-    bool nodeDependencyFlag = generateInteractionSetForNode(g, generate, *ni, interactionSets, nodeGenerateType);
+    bool nodeDependencyFlag = generateInteractionSetForNode(g, generate, generateType, *ni, interactionSets);
 
     // Check that flag for each call to generate returns the same thing.
     if (ni == g.begin()) {
       dependencyFlag = nodeDependencyFlag;
-      generateType = nodeGenerateType;
     }
-    else {
-      if (nodeDependencyFlag != dependencyFlag) {
-        throw std::runtime_error("Dependency flags are not consistent!");
-      }
-      if (nodeGenerateType != generateType) {
-        throw std::runtime_error("Generate types are not consistent!");
-      }
+    else if (nodeDependencyFlag != dependencyFlag) {
+      throw std::runtime_error("Dependency flags are not consistent!");
     }
   }
 
@@ -96,7 +85,7 @@ GraphCompute::generateAllInteractionSets(
   // Each node should only have itself in its interaction set.
   if (generateType == Graph::General) {
     size_t i = 0;
-    for (NodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
+    for (GraphNodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
       // Check if interaction set size is 1 and if it contains only the node.
       if ((interactionSets[i].size() != 1) || (interactionSets[i][0].index() != (*ni).index())) {
         break;
@@ -112,20 +101,28 @@ GraphCompute::generateAllInteractionSets(
   return dependencyFlag;
 }
 
-void
+/**
+ * @brief Function for detecting combine case. 
+ *
+ * @param g                 Graph on which computation is to be done.
+ * @param generateType      Type of generate function.
+ * @param interactionSets   Interaction sets for all the nodes of the graph.
+ * @param dependencyFlag    Dependency flag for all the nodes.
+ *
+ * @return Deduced combine case based on generate type and dependency flag.
+ */
+GraphCompute::GraphAlgorithmChoice
 GraphCompute::detectCombineCase(
   const Graph& g,
-  const std::vector<std::vector<typename Graph::Node> >& interactionSets,
   const GraphAlgorithmChoice generateType,
-  const bool dependencyFlag,
-  GraphAlgorithmChoice& combineCase
+  const std::vector<std::vector<GraphNode> >& interactionSets,
+  const bool dependencyFlag
 ) const
 {
-  typedef typename Graph::ConstNodeIterator NodeIterator;
-
+  GraphAlgorithmChoice combineCase = Graph::General;
   if (dependencyFlag == false) {
-    // This is simple, just use each node in the interaction
-    // set of each local node and perform the computations. Call this case no_dep.
+    // This is simple, just use each node in the interaction set
+    // of each local node and perform the computations.
     if (generateType == Graph::LocalComputation) {
       combineCase = Graph::LocalComputation;
     }
@@ -175,7 +172,7 @@ GraphCompute::detectCombineCase(
         // for each node check if the I-set has only one node in it
         // and check about the levels of the nodes
         size_t i = 0;
-        for (NodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
+        for (GraphNodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
           if (!(*ni).isRoot()) {
             // check if i-set sizes are == 1
             if (interactionSets[i].size() != 1) {
@@ -197,7 +194,7 @@ GraphCompute::detectCombineCase(
         // for each node check if the I-set has same # of nodes as its # of children
         // and check for each node if it is its child
         size_t i = 0;
-        for (NodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
+        for (GraphNodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
           if (!(*ni).isLeaf()) {
             // check if i-set sizes are == num of children
             if ((*ni).numChildren() != interactionSets[i].size()) break;
@@ -235,13 +232,24 @@ GraphCompute::detectCombineCase(
       throw std::runtime_error("Error in obtaining consensus for computations!");
     }
   }
+
+  return combineCase;
 }
 
+/**
+ * @brief 
+ *
+ * @param g                 Graph on which computation is to be done.
+ * @param combine
+ * @param interactionSets   Interaction sets for all the nodes of the graph.
+ * @param combineCase
+ * @param computeTime
+ */
 void
 GraphCompute::combineAll(
   Graph& g,
   CombineFunction& combine,
-  const std::vector<std::vector<typename Graph::Node> >& interactionSets,
+  const std::vector<std::vector<GraphNode> >& interactionSets,
   const GraphAlgorithmChoice combineCase,
   double& computeTime
 ) const
@@ -286,6 +294,15 @@ GraphCompute::combineAll(
   MPI_Barrier(*m_mpiCommunicator);
 }
 
+/**
+ * @brief 
+ *
+ * @param g          Graph on which computation is to be done.
+ * @param generate
+ * @param combine
+ *
+ * @return 
+ */
 bool
 GraphCompute::operator()(
   Graph& g,
@@ -297,17 +314,18 @@ GraphCompute::operator()(
     std::cout << "+ performing Graph compute ... ";
   }
 
-  std::vector<std::vector<typename Graph::Node> > interactionSets;
+  std::vector<std::vector<GraphNode> > interactionSets;
 
   MPI_Barrier(*m_mpiCommunicator);
   double graphComputeTotalTime = MPI_Wtime();
 
 
   double generateTime = MPI_Wtime();
-  GraphAlgorithmChoice generateType = Graph::General;
+
+  GraphAlgorithmChoice generateType = generate.type();
   bool dependencyFlag;
   try {
-    dependencyFlag = generateAllInteractionSets(g, generate, interactionSets, generateType);
+    dependencyFlag = generateAllInteractionSets(g, generate, generateType, interactionSets);
   }
   catch (std::runtime_error& e) {
     std::cerr << e.what() << std::endl;
@@ -317,9 +335,9 @@ GraphCompute::operator()(
   generateTime = MPI_Wtime() - generateTime;
 
   double detectionTime = MPI_Wtime();
-  GraphAlgorithmChoice combineCase = Graph::General;
+  GraphAlgorithmChoice combineCase;
   try {
-    detectCombineCase(g, interactionSets, generateType, dependencyFlag, combineCase);
+    combineCase = detectCombineCase(g, generateType, interactionSets, dependencyFlag);
   }
   catch (std::runtime_error& e) {
     std::cerr << e.what() << std::endl;

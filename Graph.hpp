@@ -5,7 +5,6 @@
 #include <vector>
 
 class CombineFunction;
-
 class MPICommunicator;
 
 class Graph {

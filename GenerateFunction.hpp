@@ -3,7 +3,7 @@
 
 #include "Graph.hpp"
 
-#include <vector>
+#include <iterator>
 
 class GenerateFunction {
 public:
@@ -14,6 +14,10 @@ public:
     const Graph::Node&,
     std::back_insert_iterator<std::vector<Graph::Node> >&
   ) = 0;
+
+  virtual
+  Graph::AlgorithmChoice
+  type() const { return Graph::General; }
 
 }; // class GenerateFunction
 
