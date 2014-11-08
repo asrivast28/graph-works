@@ -1,6 +1,8 @@
 #ifndef GRAPHWORKS_GRAPH_HPP_
 #define GRAPHWORKS_GRAPH_HPP_
 
+#include "InputData.hpp"
+
 #include <cstddef>
 #include <vector>
 
@@ -21,9 +23,23 @@ public:
     DownwardAccumulateReverse
   };
 
+public:
+  Graph(
+    const InputData::Point* const,
+    const unsigned int,
+    const MPICommunicator&
+  );
+
   class Node {
     public:
-      size_t
+      typedef unsigned int IndexType;
+
+    public:
+      Node();
+
+      Node(const Node&);
+
+      IndexType
       index() const;
 
       bool
@@ -38,13 +54,16 @@ public:
       bool
       isChild(const Node&) const;
 
-      size_t
+      unsigned int 
       numChildren() const;
-  };
 
-  typedef std::vector<Node>::iterator NodeIterator;
+    private:
+      IndexType m_index;
+  }; // class Node
 
-  typedef std::vector<Node>::const_iterator ConstNodeIterator;
+  typedef typename std::vector<Node>::iterator NodeIterator;
+
+  typedef typename std::vector<Node>::const_iterator ConstNodeIterator;
 
   NodeIterator
   begin();
@@ -58,14 +77,13 @@ public:
   ConstNodeIterator
   end() const;
 
-  size_t
+  unsigned int 
   size() const;
 
   template <AlgorithmChoice>
   bool
   compute(
-    CombineFunction&,
-    const MPICommunicator&,
+    const CombineFunction&,
     const std::vector<std::vector<Node> >&
   );
 
@@ -73,6 +91,7 @@ public:
 
 private:
   std::vector<Node> m_nodeList;
+  const MPICommunicator& m_mpiCommunicator;
 }; // class Graph
 
 #endif // GRAPHWORKS_GRAPH_HPP_

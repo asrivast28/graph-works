@@ -21,8 +21,8 @@ public:
   bool
   operator()(
     Graph&,
-    GenerateFunction&,
-    CombineFunction&
+    const GenerateFunction&,
+    const CombineFunction&
   );
 
   ~GraphCompute();
@@ -31,7 +31,7 @@ private:
   bool
   generateInteractionSetForNode(
     const Graph&,
-    GenerateFunction&,
+    const GenerateFunction&,
     const GraphAlgorithmChoice,
     const GraphNode& node,
     std::vector<std::vector<GraphNode> >&
@@ -40,7 +40,7 @@ private:
   bool
   generateAllInteractionSets(
     const Graph&,
-    GenerateFunction&,
+    const GenerateFunction&,
     GraphAlgorithmChoice&,
     std::vector<std::vector<GraphNode> >&
   ) const;
@@ -56,10 +56,9 @@ private:
   void
   combineAll(
     Graph&,
-    CombineFunction&,
+    const CombineFunction&,
     const std::vector<std::vector<GraphNode> >&,
-    const GraphAlgorithmChoice,
-    double&
+    const GraphAlgorithmChoice
   ) const;
 
 private:

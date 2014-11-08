@@ -26,7 +26,7 @@ GraphCompute::GraphCompute(
 bool
 GraphCompute::generateInteractionSetForNode(
   const Graph& g,
-  GenerateFunction& generate,
+  const GenerateFunction& generate,
   const GraphAlgorithmChoice generateType,
   const GraphNode& node,
   std::vector<std::vector<GraphNode> >& interactionSets
@@ -60,7 +60,7 @@ GraphCompute::generateInteractionSetForNode(
 bool
 GraphCompute::generateAllInteractionSets(
   const Graph& g,
-  GenerateFunction& generate,
+  const GenerateFunction& generate,
   GraphAlgorithmChoice& generateType,
   std::vector<std::vector<GraphNode> >& interactionSets
 ) const
@@ -84,7 +84,7 @@ GraphCompute::generateAllInteractionSets(
   // Identify the local computation case.
   // Each node should only have itself in its interaction set.
   if (generateType == Graph::General) {
-    size_t i = 0;
+    unsigned int i = 0;
     for (GraphNodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
       // Check if interaction set size is 1 and if it contains only the node.
       if ((interactionSets[i].size() != 1) || (interactionSets[i][0].index() != (*ni).index())) {
@@ -171,7 +171,7 @@ GraphCompute::detectCombineCase(
         //	<< std::endl;
         // for each node check if the I-set has only one node in it
         // and check about the levels of the nodes
-        size_t i = 0;
+        unsigned int i = 0;
         for (GraphNodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
           if (!(*ni).isRoot()) {
             // check if i-set sizes are == 1
@@ -193,14 +193,14 @@ GraphCompute::detectCombineCase(
       if (combineCase == Graph::General) {
         // for each node check if the I-set has same # of nodes as its # of children
         // and check for each node if it is its child
-        size_t i = 0;
+        unsigned int i = 0;
         for (GraphNodeIterator ni = g.begin(); ni != g.end(); ++ni, ++i) {
           if (!(*ni).isLeaf()) {
             // check if i-set sizes are == num of children
             if ((*ni).numChildren() != interactionSets[i].size()) break;
             // check if the node in i-set of each node is its parent
             bool breakFlag = false;
-            for (size_t j = 0; j < interactionSets[i].size(); ++j) {
+            for (unsigned int j = 0; j < interactionSets[i].size(); ++j) {
               if (!interactionSets[i][j].isChild(*ni)) {
                 breakFlag = true;
                 break;
@@ -227,7 +227,7 @@ GraphCompute::detectCombineCase(
   // find consensus combine case among all procs
   GraphAlgorithmChoice* consensus = new GraphAlgorithmChoice[m_mpiCommunicator.size()];
   MPI_Allgather(&combineCase, 1, MPI_INT, consensus, 1, MPI_INT, *m_mpiCommunicator);
-  for (int i = 0; i < m_mpiCommunicator.size(); ++i) {
+  for (unsigned int i = 0; i < m_mpiCommunicator.size(); ++i) {
     if (consensus[i] != combineCase) {
       throw std::runtime_error("Error in obtaining consensus for computations!");
     }
@@ -240,134 +240,115 @@ GraphCompute::detectCombineCase(
  * @brief 
  *
  * @param g                 Graph on which computation is to be done.
- * @param combine
+ * @param combine           User provided combine function.
  * @param interactionSets   Interaction sets for all the nodes of the graph.
- * @param combineCase
- * @param computeTime
+ * @param combineCase       The algorithm type to be used for combining.
  */
 void
 GraphCompute::combineAll(
   Graph& g,
-  CombineFunction& combine,
+  const CombineFunction& combine,
   const std::vector<std::vector<GraphNode> >& interactionSets,
-  const GraphAlgorithmChoice combineCase,
-  double& computeTime
+  const GraphAlgorithmChoice combineCase
 ) const
 {
-  computeTime = MPI_Wtime();
   // XXX: Revisit later.
-  // This is a stupid way of calling algorithm specific function
+  // This seems like a stupid way of calling algorithm specific function
   // but can't figure out a better way of doing this as of now.
   switch (combineCase) {
     case Graph::General:
-      g.compute<Graph::General>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::General>(combine, interactionSets);
       break;
     case Graph::LocalComputation:
-      g.compute<Graph::LocalComputation>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::LocalComputation>(combine, interactionSets);
       break;
     case Graph::NoDependency:
-      g.compute<Graph::NoDependency>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::NoDependency>(combine, interactionSets);
       break;
     case Graph::UpwardAccumulateReverse:
-      g.compute<Graph::UpwardAccumulateReverse>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::UpwardAccumulateReverse>(combine, interactionSets);
       break;
     case Graph::UpwardAccumulateSpecial:
-      g.compute<Graph::UpwardAccumulateSpecial>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::UpwardAccumulateSpecial>(combine, interactionSets);
       break;
     case Graph::UpwardAccumulateGeneral:
-      g.compute<Graph::UpwardAccumulateGeneral>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::UpwardAccumulateGeneral>(combine, interactionSets);
       break;
     case Graph::DownwardAccumulateReverse:
-      g.compute<Graph::DownwardAccumulateReverse>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::DownwardAccumulateReverse>(combine, interactionSets);
       break;
     case Graph::DownwardAccumulateSpecial:
-      g.compute<Graph::DownwardAccumulateSpecial>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::DownwardAccumulateSpecial>(combine, interactionSets);
       break;
     case Graph::DownwardAccumulateGeneral:
-      g.compute<Graph::DownwardAccumulateGeneral>(combine, m_mpiCommunicator, interactionSets);
+      g.compute<Graph::DownwardAccumulateGeneral>(combine, interactionSets);
       break;
     default:
       throw std::runtime_error("Call for some algorithm choice is missing!");
   }
-  computeTime = MPI_Wtime() - computeTime;
 
   MPI_Barrier(*m_mpiCommunicator);
 }
 
 /**
- * @brief 
+ * @brief Function which is called by the user for performing computations. 
  *
  * @param g          Graph on which computation is to be done.
- * @param generate
- * @param combine
+ * @param generate   User provided generate function.
+ * @param combine    User provided combine function.
  *
- * @return 
+ * @return true if computation was successful, else return false. 
  */
 bool
 GraphCompute::operator()(
   Graph& g,
-  GenerateFunction& generate,
-  CombineFunction& combine
+  const GenerateFunction& generate,
+  const CombineFunction& combine
 )
 {
   if (m_mpiCommunicator.rank() == 0) {
     std::cout << "+ performing Graph compute ... ";
   }
 
-  std::vector<std::vector<GraphNode> > interactionSets;
-
   MPI_Barrier(*m_mpiCommunicator);
-  double graphComputeTotalTime = MPI_Wtime();
 
-
-  double generateTime = MPI_Wtime();
-
-  GraphAlgorithmChoice generateType = generate.type();
-  bool dependencyFlag;
   try {
-    dependencyFlag = generateAllInteractionSets(g, generate, generateType, interactionSets);
+    std::vector<std::vector<GraphNode> > interactionSets;
+
+    double graphComputeTotalTime = MPI_Wtime();
+
+    double generateTime = MPI_Wtime();
+    GraphAlgorithmChoice generateType = generate.type();
+    bool dependencyFlag = generateAllInteractionSets(g, generate, generateType, interactionSets);
+    generateTime = MPI_Wtime() - generateTime;
+
+    double detectionTime = MPI_Wtime();
+    GraphAlgorithmChoice combineCase = detectCombineCase(g, generateType, interactionSets, dependencyFlag);
+    detectionTime = MPI_Wtime() - detectionTime;
+
+    // Currently only the special cases, UpwardAccumulateSpecial and DownwardAccumulateSpecial,
+    // are implemented, were the nodes in the all interaction sets are all children, or the parent,
+    // respectively. In these cases, new dependency forest is not constructed.
+    double computeTime = MPI_Wtime();
+    combineAll(g, combine, interactionSets, combineCase);
+    computeTime = MPI_Wtime() - computeTime;
+
+    graphComputeTotalTime = MPI_Wtime() - graphComputeTotalTime;
+
+    if (m_mpiCommunicator.rank() == 0) {
+      std::cout << "done: "
+        << graphComputeTotalTime * 1000 << "ms"
+        << " [g: " << generateTime * 1000 << "ms"
+        << ", d: " << detectionTime * 1000 << "ms"
+        << ", c: " << computeTime * 1000 << "ms]"
+        << std::endl;
+    }
+
   }
   catch (std::runtime_error& e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "Aborting!" << std::endl;
     return false;
-  }
-  generateTime = MPI_Wtime() - generateTime;
-
-  double detectionTime = MPI_Wtime();
-  GraphAlgorithmChoice combineCase;
-  try {
-    combineCase = detectCombineCase(g, generateType, interactionSets, dependencyFlag);
-  }
-  catch (std::runtime_error& e) {
-    std::cerr << e.what() << std::endl;
-    std::cerr << "Aborting!" << std::endl;
-    return false;
-  }
-  detectionTime = MPI_Wtime() - detectionTime;
-
-  // Currently only the special cases, UpwardAccumulateSpecial and DownwardAccumulateSpecial,
-  // are implemented, were the nodes in the all interaction sets are all children, or the parent,
-  // respectively. In these cases, new dependency forest is not constructed.
-  double computeTime = 0.0;
-  try {
-    combineAll(g, combine, interactionSets, combineCase, computeTime);
-  }
-  catch (std::runtime_error& e) {
-    std::cerr << e.what() << std::endl;
-    std::cerr << "Aborting!" << std::endl;
-    return false;
-  }
-
-  graphComputeTotalTime = MPI_Wtime() - graphComputeTotalTime;
-
-  if (m_mpiCommunicator.rank() == 0) {
-    std::cout << "done: "
-      << graphComputeTotalTime * 1000 << "ms"
-      << " [g: " << generateTime * 1000 << "ms"
-      << ", d: " << detectionTime * 1000 << "ms"
-      << ", c: " << computeTime * 1000 << "ms]"
-      << std::endl;
   }
 
   return true;

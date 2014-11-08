@@ -8,8 +8,12 @@ public:
   MPICommunicator(MPI_Comm communicator = MPI_COMM_WORLD)
     : m_communicator(communicator)
   { 
-    MPI_Comm_size(m_communicator, &m_size);
-    MPI_Comm_rank(m_communicator, &m_rank);
+    int size, rank;
+    MPI_Comm_size(m_communicator, &size);
+    MPI_Comm_rank(m_communicator, &rank);
+
+    m_size = static_cast<size_t>(size);
+    m_rank = static_cast<size_t>(rank);
   }
 
   MPICommunicator(const MPICommunicator& mpiCommunicator)
@@ -21,14 +25,14 @@ public:
 
   MPI_Comm operator*() const { return m_communicator; }
 
-  int size() const { return m_size; }
+  size_t size() const { return m_size; }
 
-  int rank() const { return m_rank; }
+  size_t rank() const { return m_rank; }
 
 private:
   const MPI_Comm m_communicator;	// the MPI communicator
-  int m_rank;		// rank of the processor
-  int m_size; 		// size of the communicator
+  size_t m_rank;		// rank of the processor
+  size_t m_size; 		// size of the communicator
 }; // class MPICommunicator
 
 #endif // GRAPHWORKS_MPICOMMUNICATOR_HPP_

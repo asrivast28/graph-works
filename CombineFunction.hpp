@@ -10,7 +10,7 @@ public:
   operator()(
     Graph::Node&,
     const Graph::Node&
-  ) = 0;
+  ) const = 0;
 
 }; // class CombineFunction
 

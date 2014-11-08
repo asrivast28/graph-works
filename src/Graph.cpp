@@ -3,47 +3,13 @@
 #include "CombineFunction.hpp"
 #include "MPICommunicator.hpp"
 
-size_t
-Graph::Node::index(
-) const
+Graph::Graph(
+  const InputData::Point* const points,
+  const unsigned int numPoints,
+  const MPICommunicator& mpiCommunicator
+) : m_nodeList(),
+  m_mpiCommunicator(mpiCommunicator)
 {
-  return 0;
-}
-
-bool
-Graph::Node::isRoot(
-) const
-{
-  return false;
-}
-
-bool
-Graph::Node::isLeaf(
-) const
-{
-  return false;
-}
-bool
-Graph::Node::isParent(
-  const Node& n
-) const
-{
-  return false;
-}
-
-bool
-Graph::Node::isChild(
-  const Node& n
-) const
-{
-  return false;
-}
-
-size_t
-Graph::Node::numChildren(
-) const
-{
-  return 0;
 }
 
 Graph::NodeIterator
@@ -74,18 +40,17 @@ Graph::end(
   return m_nodeList.end();
 }
 
-size_t
+unsigned int
 Graph::size(
 ) const
 {
-  return m_nodeList.size();
+  return static_cast<unsigned int>(m_nodeList.size());
 }
 
 template <Graph::AlgorithmChoice>
 bool
 Graph::compute(
-  CombineFunction& combine,
-  const MPICommunicator& mpiCommunicator,
+  const CombineFunction& combine,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -96,14 +61,13 @@ Graph::compute(
 template <>
 bool
 Graph::compute<Graph::NoDependency>(
-  CombineFunction& combine,
-  const MPICommunicator& mpiCommunicator,
+  const CombineFunction& combine,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
   // For each node in the node list, apply combine for all the nodes in its interacton set.
-  for (size_t i = 0; i < m_nodeList.size(); ++ i) {
-    for (size_t j = 0; j < interactionSets[i].size(); ++ j) {
+  for (unsigned int i = 0; i < m_nodeList.size(); ++ i) {
+    for (unsigned int j = 0; j < interactionSets[i].size(); ++ j) {
       combine(m_nodeList[i], interactionSets[i][j]);
     }
   }
@@ -114,8 +78,7 @@ Graph::compute<Graph::NoDependency>(
 template <>
 bool
 Graph::compute<Graph::LocalComputation>(
-  CombineFunction& combine,
-  const MPICommunicator& mpiCommunicator,
+  const CombineFunction& combine,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -130,8 +93,7 @@ Graph::compute<Graph::LocalComputation>(
 template <>
 bool
 Graph::compute<Graph::UpwardAccumulateSpecial>(
-  CombineFunction& combine,
-  const MPICommunicator& mpiCommunicator,
+  const CombineFunction& combine,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -141,8 +103,7 @@ Graph::compute<Graph::UpwardAccumulateSpecial>(
 template <>
 bool
 Graph::compute<Graph::DownwardAccumulateSpecial>(
-  CombineFunction& combine,
-  const MPICommunicator& mpiCommunicator,
+  const CombineFunction& combine,
   const std::vector<std::vector<Node> >& interactionSets
 )
 {
@@ -154,8 +115,9 @@ Graph::~Graph(
 {
 }
 
-template bool Graph::compute<Graph::General>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::UpwardAccumulateReverse>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::UpwardAccumulateGeneral>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::DownwardAccumulateReverse>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
-template bool Graph::compute<Graph::DownwardAccumulateGeneral>(CombineFunction&, const MPICommunicator&, const std::vector<std::vector<Node> >&);
+
+template bool Graph::compute<Graph::General>(const CombineFunction&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::UpwardAccumulateReverse>(const CombineFunction&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::UpwardAccumulateGeneral>(const CombineFunction&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::DownwardAccumulateReverse>(const CombineFunction&, const std::vector<std::vector<Node> >&);
+template bool Graph::compute<Graph::DownwardAccumulateGeneral>(const CombineFunction&, const std::vector<std::vector<Node> >&);

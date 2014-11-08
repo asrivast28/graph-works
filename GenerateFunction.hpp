@@ -13,7 +13,7 @@ public:
     const Graph&,
     const Graph::Node&,
     std::back_insert_iterator<std::vector<Graph::Node> >&
-  ) = 0;
+  ) const = 0;
 
   virtual
   Graph::AlgorithmChoice
