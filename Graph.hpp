@@ -87,6 +87,10 @@ public:
     const std::vector<std::vector<Node> >&
   );
 
+  std::vector<Node>& getProcessorNodeList(){
+	  return m_nodeList;
+  }
+
   ~Graph();
 
 private:

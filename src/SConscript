@@ -5,6 +5,7 @@ srcFiles = [
            'GraphNode.cpp',
            'Graph.cpp',
            'GraphCompute.cpp',
+           'GraphAlgorithmFactory.cpp',
            'main.cpp',
            ]
 

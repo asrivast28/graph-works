@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 
   GraphCompute graphCompute(mpiCommunicator);
 
-  // graphCompute();
+//  graphCompute(myGraph, NULL, NULL);
 
   MPI_Finalize();
 

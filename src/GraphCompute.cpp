@@ -252,42 +252,11 @@ GraphCompute::combineAll(
   const GraphAlgorithmChoice combineCase
 ) const
 {
-  // XXX: Revisit later.
-  // This seems like a stupid way of calling algorithm specific function
-  // but can't figure out a better way of doing this as of now.
-  switch (combineCase) {
-    case Graph::General:
-      g.compute<Graph::General>(combine, interactionSets);
-      break;
-    case Graph::LocalComputation:
-      g.compute<Graph::LocalComputation>(combine, interactionSets);
-      break;
-    case Graph::NoDependency:
-      g.compute<Graph::NoDependency>(combine, interactionSets);
-      break;
-    case Graph::UpwardAccumulateReverse:
-      g.compute<Graph::UpwardAccumulateReverse>(combine, interactionSets);
-      break;
-    case Graph::UpwardAccumulateSpecial:
-      g.compute<Graph::UpwardAccumulateSpecial>(combine, interactionSets);
-      break;
-    case Graph::UpwardAccumulateGeneral:
-      g.compute<Graph::UpwardAccumulateGeneral>(combine, interactionSets);
-      break;
-    case Graph::DownwardAccumulateReverse:
-      g.compute<Graph::DownwardAccumulateReverse>(combine, interactionSets);
-      break;
-    case Graph::DownwardAccumulateSpecial:
-      g.compute<Graph::DownwardAccumulateSpecial>(combine, interactionSets);
-      break;
-    case Graph::DownwardAccumulateGeneral:
-      g.compute<Graph::DownwardAccumulateGeneral>(combine, interactionSets);
-      break;
-    default:
-      throw std::runtime_error("Call for some algorithm choice is missing!");
-  }
-
-  MPI_Barrier(*m_mpiCommunicator);
+	GraphAlgorithmFactory& factory = new GraphAlgorithmFactory(
+			m_mpiCommunicator);
+	GraphAlgorithmFunction algorithm = factory.getAlgorithm(g, combineCase);
+	algorithm(g, combine, interactionSets);
+	MPI_Barrier(*m_mpiCommunicator);
 }
 
 /**
