@@ -5,13 +5,24 @@
 
 class CombineFunction {
 public:
-  virtual
+  /**Implement one of these**/
+
   bool
   operator()(
-    Graph::Node&,
-    const Graph::Node&
-  ) const = 0;
-
+    Graph::Node& u,
+    const Graph::Node& v
+  ) const = 0{
+	  return false;
+  }
+  bool
+  operator()(
+    DataPoint& p1,
+    const DataPoint& p2
+  ) const = 0{
+  	return false;
+  }
 }; // class CombineFunction
 
+
+}; // class CombineFunction
 #endif // GRAPHWORKS_COMBINEFUNCTION_HPP_

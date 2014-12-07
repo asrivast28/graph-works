@@ -7,13 +7,24 @@
 
 class GenerateFunction {
 public:
-  virtual
+  /** Implement One of these **/
   bool
   operator()(
-    const Graph&,
-    const Graph::Node&,
-    std::back_insert_iterator<std::vector<Graph::Node> >&
-  ) const = 0;
+    const Graph& g,
+    const Graph::Node& u,
+    std::back_insert_iterator<std::vector<Graph::Node> >& v,
+    bool& dependency) const = 0{
+	  return false;
+  }
+  bool
+    operator()(
+      const Graph& g,
+      const DataPoint& dataPoint,
+      std::back_insert_iterator<std::vector<DataPoint> >& dependentDataPoints,
+      bool& dependency) const = 0{
+  	  return false;
+    }
+  /**------------------------**/
 
   virtual
   Graph::AlgorithmChoice

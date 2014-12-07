@@ -1,10 +1,11 @@
 #include "GraphCompute.hpp"
 
-#include "CombineFunction.hpp"
-#include "GenerateFunction.hpp"
 #include "MPICommunicator.hpp"
 
 #include <iostream>
+
+#include "SampleLocalCombineFunction.hpp"
+#include "SampleLocalGenerateFunction.hpp"
 
 GraphCompute::GraphCompute(
   const MPICommunicator& mpiCommunicator

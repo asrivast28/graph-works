@@ -1,7 +1,7 @@
 #include "Graph.hpp"
 
-#include "CombineFunction.hpp"
 #include "MPICommunicator.hpp"
+#include "SampleLocalCombineFunction.hpp"
 
 Graph::Graph(
   const InputData::Point* const points,

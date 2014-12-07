@@ -14,6 +14,10 @@ public:
 	const CombineFunction&,
 	const std::vector<std::vector<Graph::Node> >&
   ) const = 0;
+  virtual  float  getScore(
+      Graph::Graph&,
+  	const std::vector<std::vector<Graph::Node> >&
+    ) const = 0;
   virtual Graph::AlgorithmChoice getType();
 
 };
