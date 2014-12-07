@@ -5,13 +5,15 @@
  *      Author: samindaw
  */
 
-#ifndef DATAPOINT_HPP_
-#define DATAPOINT_HPP_
+#ifndef GRAPHWORKS_DATAPOINT_HPP_
+#define GRAPHWORKS_DATAPOINT_HPP_
 
 class DataPoint {
 public:
 	DataPoint();
-	virtual ~DataPoint();
-};
 
-#endif /* DATAPOINT_HPP_ */
+	virtual
+  ~DataPoint();
+}; // class DataPoint
+
+#endif // GRAPHWORKS_DATAPOINT_HPP_ 

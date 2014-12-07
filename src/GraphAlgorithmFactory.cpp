@@ -7,24 +7,32 @@
 
 #include "GraphAlgorithmFactory.hpp"
 
-using namespace std;
-
-void GraphAlgorithmFactory::registerAlgorithm(GraphAlgorithmFunction& algorithm) {
-	algorithms.push_back(algorithm);
+void
+GraphAlgorithmFactory::registerAlgorithm(
+  GraphAlgorithmFunction& algorithm
+)
+{
+	m_algorithms.push_back(algorithm);
 }
 
-void GraphAlgorithmFactory::unregisterAlgorithm(GraphAlgorithmFunction& algorithm) {
+void
+GraphAlgorithmFactory::unregisterAlgorithm(
+  GraphAlgorithmFunction& algorithm
+)
+{
 	//TODO
 }
 
-GraphAlgorithmFunction& GraphAlgorithmFactory::getAlgorithm(
-		const Graph& g, const Graph::AlgorithmChoice algorithmChoice) {
-	for(int i=0;i<algorithms.size();i++){
-		if (algorithms[i].getType()==algorithmChoice){
-			return algorithms[i];
+GraphAlgorithmFunction&
+GraphAlgorithmFactory::getAlgorithm(
+  const Graph& g,
+  const Graph::AlgorithmChoice algorithmChoice
+)
+{
+	for (GraphAlgorithmFunction& algorithm : m_algorithms) {
+		if (algorithm.getType() == algorithmChoice) {
+			return algorithm;
 		}
 	}
-	GraphAlgorithmFunction *a;
-	return *a;
 }
 

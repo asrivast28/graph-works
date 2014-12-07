@@ -30,8 +30,8 @@ int main(int argc, char** argv)
 
   GraphCompute graphCompute(mpiCommunicator);
 
-  SampleLocalGenerateFunction& generate;
-  SampleLocalCombineFunction& combine;
+  SampleLocalGenerateFunction generate;
+  SampleLocalCombineFunction combine;
   graphCompute(myGraph, generate, combine);
 
   MPI_Finalize();

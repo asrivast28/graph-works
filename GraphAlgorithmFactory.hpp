@@ -1,9 +1,10 @@
-#ifndef GRAPHWORKS_ALGORYTHMFACTORY_HPP_
-#define GRAPHWORKS_ALGORYTHMFACTORY_HPP_
+#ifndef GRAPHWORKS_ALGORITHMFACTORY_HPP_
+#define GRAPHWORKS_ALGORITHMFACTORY_HPP_
 
-#include <vector>
 #include "Graph.hpp"
 #include "GraphAlgorithmFunction.hpp"
+
+#include <vector>
 
 class CombineFunction;
 class GenerateFunction;
@@ -12,16 +13,30 @@ class MPICommunicator;
 class GraphAlgorithmFactory {
 
 public:
-  GraphAlgorithmFactory(const MPICommunicator& mpiCommunicator) : m_mpiCommunicator(mpiCommunicator){
-  }
-  void registerAlgorithm(GraphAlgorithmFunction& algorithm);
-  void unregisterAlgorithm(GraphAlgorithmFunction& algorithm);
-  GraphAlgorithmFunction& getAlgorithm(const Graph&, const Graph::AlgorithmChoice);
+  GraphAlgorithmFactory(
+    const MPICommunicator& mpiCommunicator
+  ) : m_mpiCommunicator(mpiCommunicator)
+  { }
+
+  void
+  registerAlgorithm(
+    GraphAlgorithmFunction&
+  );
+
+  void
+  unregisterAlgorithm(
+    GraphAlgorithmFunction& algorithm
+  );
+
+  GraphAlgorithmFunction&
+  getAlgorithm(
+    const Graph&,
+    const Graph::AlgorithmChoice
+  );
 
 private:
   const MPICommunicator& m_mpiCommunicator;
-private:
-  std::vector<GraphAlgorithmFunction> algorithms;
+  std::vector<GraphAlgorithmFunction> m_algorithms;
 };
 
-#endif // GRAPHWORKS_ALGORYTHMFACTORY_HPP_
+#endif // GRAPHWORKS_ALGORITHMFACTORY_HPP_

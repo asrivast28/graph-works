@@ -1,6 +1,7 @@
 Import('env')
 
 srcFiles = [
+           'DataPoint.cpp',
            'InputData.cpp',
            'GraphNode.cpp',
            'Graph.cpp',

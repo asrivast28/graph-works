@@ -1,25 +1,30 @@
 #ifndef GRAPHWORKS_ALGORITHMFUNCTION_HPP_
 #define GRAPHWORKS_ALGORITHMFUNCTION_HPP_
-#include <vector>
+
 #include "Graph.hpp"
 
+#include <vector>
+
 class GraphAlgorithmFunction {
-private:
-  const MPICommunicator& m_mpiCommunicator;
 public:
-  GraphAlgorithmFunction(const MPICommunicator& mpiCommunicator) : m_mpiCommunicator(mpiCommunicator){};
-
-  virtual  bool  operator()(
-    Graph::Graph&,
-	const CombineFunction&,
-	const std::vector<std::vector<Graph::Node> >&
+  virtual
+  bool
+  operator()(
+    Graph&,
+    const CombineFunction&,
+    const std::vector<std::vector<Graph::Node> >&
   ) const = 0;
-  virtual  float  getScore(
-      Graph::Graph&,
-  	const std::vector<std::vector<Graph::Node> >&
-    ) const = 0;
-  virtual Graph::AlgorithmChoice getType();
 
-};
+  virtual
+  float
+  getScore(
+    Graph&,
+  	const std::vector<std::vector<Graph::Node> >&
+  ) const = 0;
+
+  virtual
+  Graph::AlgorithmChoice 
+  getType() const = 0;
+}; // class GraphAlgorithmFunction
 
 #endif // GRAPHWORKS_ALGORITHMFUNCTION_HPP_
