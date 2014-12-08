@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "GraphAlgorithmFactory.hpp"
 #include "SampleLocalCombineFunction.hpp"
 #include "SampleLocalGenerateFunction.hpp"
 
@@ -36,7 +37,8 @@ GraphCompute::generateInteractionSetForNode(
   std::vector<GraphNode> tempInteractionSet;
   std::back_insert_iterator<std::vector<GraphNode> > tempInteractionSetIter(tempInteractionSet);
 
-  bool dependencyFlag = generate(g, node, tempInteractionSetIter);
+  bool dependencyFlag = true;
+  generate(g, node, tempInteractionSetIter, dependencyFlag);
 
   if (generateType == Graph::General) {
     interactionSets.push_back(tempInteractionSet);
@@ -253,10 +255,9 @@ GraphCompute::combineAll(
   const GraphAlgorithmChoice combineCase
 ) const
 {
-	GraphAlgorithmFactory& factory = new GraphAlgorithmFactory(
-			m_mpiCommunicator);
-	GraphAlgorithmFunction algorithm = factory.getAlgorithm(g, combineCase);
-	algorithm(g, combine, interactionSets);
+	GraphAlgorithmFactory factory(m_mpiCommunicator);
+	GraphAlgorithmFunction* algorithm = factory.getAlgorithm(g, combineCase);
+	(*algorithm)(g, combine, interactionSets);
 	MPI_Barrier(*m_mpiCommunicator);
 }
 

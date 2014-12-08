@@ -9,6 +9,9 @@
 #include "InputData.hpp"
 #include "MPICommunicator.hpp"
 
+#include "SampleLocalCombineFunction.hpp"
+#include "SampleLocalGenerateFunction.hpp"
+
 #include <mpi.h>
 
 int main(int argc, char** argv)

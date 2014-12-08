@@ -6,7 +6,11 @@
 
 class SampleLocalCombineFunction : public CombineFunction {
 public:
-  bool operator()(Graph::Node& u, const Graph::Node& v) const {
+  bool operator()(
+    Graph::Node& u,
+    const Graph::Node&
+  ) const
+  {
 	  if(u.isLeaf()) {
 		  //TODO
 	  } else {

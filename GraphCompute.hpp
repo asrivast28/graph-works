@@ -1,12 +1,12 @@
 #ifndef GRAPHWORKS_GRAPHCOMPUTE_HPP_
 #define GRAPHWORKS_GRAPHCOMPUTE_HPP_
 
+#include "GenerateFunction.hpp"
 #include "Graph.hpp"
 
 #include <vector>
 
 class CombineFunction;
-class GenerateFunction;
 class MPICommunicator;
 
 class GraphCompute {

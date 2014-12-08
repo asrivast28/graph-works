@@ -1,6 +1,8 @@
 Import('env')
 
 srcFiles = [
+           'GenerateFunction.cpp',
+           'CombineFunction.cpp',
            'DataPoint.cpp',
            'InputData.cpp',
            'GraphNode.cpp',

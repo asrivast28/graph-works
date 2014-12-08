@@ -33,7 +33,7 @@ Graph::Node::isLeaf(
 }
 bool
 Graph::Node::isParent(
-  const Node& n
+  const Node&
 ) const
 {
   return false;
@@ -41,7 +41,7 @@ Graph::Node::isParent(
 
 bool
 Graph::Node::isChild(
-  const Node& n
+  const Node&
 ) const
 {
   return false;

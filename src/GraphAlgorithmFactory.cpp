@@ -9,7 +9,7 @@
 
 void
 GraphAlgorithmFactory::registerAlgorithm(
-  GraphAlgorithmFunction& algorithm
+  GraphAlgorithmFunction* algorithm
 )
 {
 	m_algorithms.push_back(algorithm);
@@ -17,22 +17,23 @@ GraphAlgorithmFactory::registerAlgorithm(
 
 void
 GraphAlgorithmFactory::unregisterAlgorithm(
-  GraphAlgorithmFunction& algorithm
+  GraphAlgorithmFunction*
 )
 {
 	//TODO
 }
 
-GraphAlgorithmFunction&
+GraphAlgorithmFunction*
 GraphAlgorithmFactory::getAlgorithm(
-  const Graph& g,
+  const Graph&,
   const Graph::AlgorithmChoice algorithmChoice
 )
 {
-	for (GraphAlgorithmFunction& algorithm : m_algorithms) {
-		if (algorithm.getType() == algorithmChoice) {
+	for (GraphAlgorithmFunction* algorithm : m_algorithms) {
+		if (algorithm->getType() == algorithmChoice) {
 			return algorithm;
 		}
 	}
+  return nullptr;
 }
 

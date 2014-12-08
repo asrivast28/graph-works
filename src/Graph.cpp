@@ -4,8 +4,8 @@
 #include "SampleLocalCombineFunction.hpp"
 
 Graph::Graph(
-  const InputData::Point* const points,
-  const unsigned int numPoints,
+  const InputData::Point* const,
+  const unsigned int,
   const MPICommunicator& mpiCommunicator
 ) : m_nodeList(),
   m_mpiCommunicator(mpiCommunicator)
@@ -50,8 +50,8 @@ Graph::size(
 template <Graph::AlgorithmChoice>
 bool
 Graph::compute(
-  const CombineFunction& combine,
-  const std::vector<std::vector<Node> >& interactionSets
+  const CombineFunction&,
+  const std::vector<std::vector<Node> >& 
 )
 {
   throw std::runtime_error("Computation for algorithm choice hasn't been implemented!");
@@ -79,7 +79,7 @@ template <>
 bool
 Graph::compute<Graph::LocalComputation>(
   const CombineFunction& combine,
-  const std::vector<std::vector<Node> >& interactionSets
+  const std::vector<std::vector<Node> >&
 )
 {
   // Apply combine function on each node in the node list.
@@ -93,8 +93,8 @@ Graph::compute<Graph::LocalComputation>(
 template <>
 bool
 Graph::compute<Graph::UpwardAccumulateSpecial>(
-  const CombineFunction& combine,
-  const std::vector<std::vector<Node> >& interactionSets
+  const CombineFunction&,
+  const std::vector<std::vector<Node> >& 
 )
 {
   return false;
@@ -103,8 +103,8 @@ Graph::compute<Graph::UpwardAccumulateSpecial>(
 template <>
 bool
 Graph::compute<Graph::DownwardAccumulateSpecial>(
-  const CombineFunction& combine,
-  const std::vector<std::vector<Node> >& interactionSets
+  const CombineFunction&,
+  const std::vector<std::vector<Node> >&
 )
 {
   return false;

@@ -2,6 +2,7 @@
 #define SAMPLE_LOCAL_GENERATEFUNCTION_HPP_
 
 #include "Graph.hpp"
+#include "GenerateFunction.hpp"
 
 #include <iterator>
 
@@ -9,11 +10,15 @@ class SampleLocalGenerateFunction: public GenerateFunction {
 public:
   bool
   operator()(
-    const Graph& g,
+    const Graph&,
     const Graph::Node& node,
-    std::back_insert_iterator<std::vector<Graph::Node> >& iteratorList) const = 0{
-	  iteratorList.push_back(node);
-	  return false;
+    std::back_insert_iterator<std::vector<Graph::Node> >& iteratorList,
+    bool& dependencyFlag
+  ) const
+  {
+	  iteratorList = node;
+    dependencyFlag = false;
+	  return true;
   }
 
   virtual

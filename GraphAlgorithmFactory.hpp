@@ -20,15 +20,15 @@ public:
 
   void
   registerAlgorithm(
-    GraphAlgorithmFunction&
+    GraphAlgorithmFunction*
   );
 
   void
   unregisterAlgorithm(
-    GraphAlgorithmFunction& algorithm
+    GraphAlgorithmFunction*
   );
 
-  GraphAlgorithmFunction&
+  GraphAlgorithmFunction*
   getAlgorithm(
     const Graph&,
     const Graph::AlgorithmChoice
@@ -36,7 +36,7 @@ public:
 
 private:
   const MPICommunicator& m_mpiCommunicator;
-  std::vector<GraphAlgorithmFunction> m_algorithms;
+  std::vector<GraphAlgorithmFunction*> m_algorithms;
 };
 
 #endif // GRAPHWORKS_ALGORITHMFACTORY_HPP_

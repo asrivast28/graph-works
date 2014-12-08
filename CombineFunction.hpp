@@ -12,17 +12,25 @@ public:
   virtual
   bool
   operator()(
-    Graph::Node& u,
-    const Graph::Node& v
-  ) const = 0;
+    Graph::Node&,
+    const Graph::Node&
+  ) const
+  {
+    return false;
+  }
 
   virtual
   bool
   operator()(
-    DataPoint& p1,
-    const DataPoint& p2
-  ) const = 0;
-}; // class CombineFunction
+    DataPoint&,
+    const DataPoint&
+  ) const
+  {
+    return false;
+  }
 
+  virtual
+  ~CombineFunction() = 0;
+}; // class CombineFunction
 
 #endif // GRAPHWORKS_COMBINEFUNCTION_HPP_
