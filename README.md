@@ -8,7 +8,7 @@ Abhinav Sarje and Srinivas Aluru as part of their paper titled
 TreeWorks implemented a generic framework for parallel computations on trees.
 Imaginatively named **GraphWorks** aims to extend the framework for, you guessed it, graphs.
 
-This is primarily being done as part of CSE6230 course project.
+This was primarily being done as part of CSE6230 course project. The final report for the work can be found [here](final-report.pdf).
 
 
 Contributors
